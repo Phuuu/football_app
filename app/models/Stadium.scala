@@ -1,4 +1,4 @@
 package models
 
-case class Stadium(id: Long, city: String, country: String, seats: Int) {
+case class Stadium(id: Long, name: String, country: String, seats: Int) {
 }

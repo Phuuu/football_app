@@ -1,4 +1,4 @@
-package Services
+package services
 
 import com.fasterxml.jackson.module.scala.deser.overrides.MutableList
 import models.Team

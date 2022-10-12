@@ -1,0 +1,14 @@
+@(playerForm:Form[PlayerData])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+@import views.html.helper.CSRF
+@import helper._
+
+@main("Creating a player!"){
+    @helper.form(action = routes.PlayerController.create()) {
+        @CSRF.formField
+        @helper.inputText(playerForm("team"))
+        @helper.inputText(playerForm("position"))
+        @helper.inputText(playerForm("firstName"))
+        @helper.inputText(playerForm("lastName"))
+        <input type="submit" id="submit" value="Submit" />
+    }
+}

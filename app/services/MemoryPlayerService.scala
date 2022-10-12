@@ -1,11 +1,12 @@
-package Services
+package services
 
 import com.fasterxml.jackson.module.scala.deser.overrides.MutableList
 import models.Player
 
+import scala.collection.mutable.ListBuffer
 import scala.reflect.internal.util.Position
 
-class MemoryPlayerService(players:MutableList[Player]) extends PlayerService {
+class MemoryPlayerService(players:ListBuffer[Player]) extends PlayerService {
   override def create(player: Player): Unit = ???
 
   override def update(player: Player): Unit = ???
