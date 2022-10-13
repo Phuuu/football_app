@@ -1,0 +1,10 @@
+@(players:List[Player])
+
+
+<h1>Welcome, there are @players.size players to look at!</h1>
+
+<ul>
+    @for(player <- players) {
+    <li>@player.firstName, @player.lastName</li>
+    }
+</ul>

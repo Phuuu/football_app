@@ -6,18 +6,19 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.mvc._
 
-
 import javax.inject._
+import scala.util.hashing.MurmurHash3
 
 case class PlayerData(team: String, position: String, firstName: String, lastName: String)
 
 class PlayerController @Inject()(
   val controllerComponents: ControllerComponents,
-//  val playerService: PlayerService
+  val playerService: PlayerService
   ) extends BaseController with play.api.i18n.I18nSupport {
 
   def list() = Action { implicit request =>
-    Ok("Well done!, You cracked it!")
+    val result = playerService.findAll()
+    Ok(views.html.player.players(result))
   }
 
   val playerForm = Form(mapping(
@@ -35,6 +36,17 @@ class PlayerController @Inject()(
   }
   def convertPosition(s:String): Position = s match {
     case "CenterBack" => CenterBack
+    case "GoalKeeper" => GoalKeeper
+    case "RightFullback" => RightFullback
+    case "LeftFullback" => LeftFullback
+    case "Sweeper" => Sweeper
+    case "Striker" => Striker
+    case "HoldingMidfielder" => HoldingMidfielder
+    case "RightMidfielder" => RightMidfielder
+    case "Central" => Central
+    case "AttackingMidfielder" => AttackingMidfielder
+    case "LeftMidfielder" => LeftMidfielder
+    case _ => Central
   }
 
   def create(): Action[AnyContent] = Action { implicit request =>
@@ -44,16 +56,26 @@ class PlayerController @Inject()(
         BadRequest(views.html.player.create(formWithErrors))
       },
       playerData => {
+        val id = MurmurHash3.stringHash(playerData.firstName)
+        val newId = if (id < 0) id * -1 else id
         val newPlayer = models.Player(
+          newId,
           Team(playerData.team, Stadium(10L, "Stamford Bridge", "B", 1203)),
           convertPosition(playerData.position),
           playerData.firstName,
           playerData.lastName
         )
         println("Yay!" + newPlayer)
-//        playerService.create(newPlayer)
-        Redirect(routes.StadiumController.show(10))
+        playerService.create(newPlayer)
+        Redirect(routes.PlayerController.show(newId))
       }
     )
   }
+
+  def show(id: Long) = Action { implicit request =>
+    Ok("This is placeholder for this player")
+  }
+
+
+
 }

@@ -3,11 +3,11 @@ package services
 import com.fasterxml.jackson.module.scala.deser.overrides.MutableList
 import models.Stadium
 
-import javax.inject.Inject
+import javax.inject.{Inject, Named}
 import scala.collection.mutable.ListBuffer
 import scala.util.Try
 
-class MemoryStadiumService @Inject()(val stadiums: ListBuffer[Stadium]) extends StadiumService {
+class MemoryStadiumService @Inject()(stadiums: ListBuffer[Stadium]) extends StadiumService {
   override def create(stadium: Stadium): Unit = stadiums += stadium
 
   override def update(stadium: Stadium): Try[Stadium] = {

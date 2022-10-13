@@ -1,21 +1,23 @@
 package services
 
-import models.{Player}
+import models.Player
 
 import scala.reflect.internal.util.Position
+import scala.util.Try
 
 trait PlayerService {
-  def create(player: Player)
+  def create(player: Player):Unit
 
-  def update(player: Player)
+  def update(player: Player):Try[Player]
 
-  def findById(id: Long)
+  def findById(id: Long): Option[Player]
 
-  def findAll()
+  def findAll(): List[Player]
 
-  def findByFirstName(firstName: String)
+  def findByFirstName(firstName: String): List[Player]
 
-  def findByLastName(lastName: String)
+  def findByLastName(lastName: String): List[Player]
 
-  def findByPosition(position: Position)
+  def findByPosition(position: Position): List[Player]
+
 }
