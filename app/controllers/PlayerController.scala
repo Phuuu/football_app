@@ -1,24 +1,25 @@
 package controllers
 
 import models._
-import services.PlayerService
+import services.{AsyncPlayerService, PlayerService}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.mvc._
 
 import javax.inject._
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.hashing.MurmurHash3
 
 case class PlayerData(team: String, position: String, firstName: String, lastName: String)
 
 class PlayerController @Inject()(
   val controllerComponents: ControllerComponents,
-  val playerService: PlayerService
+  val playerService: AsyncPlayerService
   ) extends BaseController with play.api.i18n.I18nSupport {
 
-  def list() = Action { implicit request =>
+  def list() = Action.async { implicit request =>
     val result = playerService.findAll()
-    Ok(views.html.player.players(result))
+    result.map(r => Ok(views.html.player.players(r)))
   }
 
   val playerForm = Form(mapping(

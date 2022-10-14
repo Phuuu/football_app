@@ -1,6 +1,5 @@
 package services
 
-import com.fasterxml.jackson.module.scala.deser.overrides.MutableList
 import models.Stadium
 
 import javax.inject.{Inject, Named}

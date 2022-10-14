@@ -1,9 +1,12 @@
 package services
-import models.{Player,  Position}
+
+import models._
+import org.mongodb.scala._
+import org.mongodb.scala.model.Filters.{empty, equal}
+
 import scala.util.Try
-
-
 import scala.concurrent.Future
+
 
 
 class MongoDBPlayerService extends AsyncPlayerService {
@@ -11,8 +14,14 @@ class MongoDBPlayerService extends AsyncPlayerService {
   val myCompanyDatabase = mongoClient.getDatabase("football_app")
   val playerCollection = myCompanyDatabase.getCollection("players")
 
-  override def create(player: Player):Future[Unit] = {
-    val document: Document = playerToDocument(player)
+  override def create(player: Player): Future[Long] = {
+    val document: Document = Document(
+      "_id" -> player.id,
+      "team" -> player.team.name,
+    "position" -> player.position.toString,
+    "firstName" -> player.firstName,
+    "lastName" -> player.lastName
+    )
 
     playerCollection
       .insertOne(document)
@@ -26,29 +35,43 @@ class MongoDBPlayerService extends AsyncPlayerService {
     playerCollection
       .find(equal("_id", id))
       .map { d =>
-        documentToStadium(d)
+        documentToPlayer(d)
       }
       .toSingle()
       .headOption()
   }
 
-
-  override def findAll(): Future[List[Player]] = playerCollection
-
-  override def findByFirstName(firstName: String): Future[List[Player]]
-
-  override def findByLastName(lastName: String): Future[List[Player]]
-
-  private def playerToDocument(player: Player) = {
-    Document(
-      "_id" -> player.id,
-      "firstName" -> player.firstName,
-      "lastName" -> player.lastName,
-      "position" -> player.position,
-      "team" -> player.team
+  private def documentToPlayer(x : Document) = {
+    Player(
+      x.getLong("_id"),
+      Team(x.getString("team"), Stadium(12L, "Chel", "UK", 1000)),
+      stringToPosition(x.getString("position")),
+      x.getString("firstName"),
+      x.getString("lastName"),
     )
   }
 
+  private def stringToPosition(string: String): Position = {
+    string match {
+      case "GoalKeeper" => GoalKeeper
+      case "RightFullback" => RightFullback
+      case "LeftFullback" => LeftFullback
+      case "CenterBack" => CenterBack
+      case "Sweeper" => Sweeper
+      case "Striker" => Striker
+      case "HoldingMidfielder" => HoldingMidfielder
+      case "RightMidfielder" => RightFullback
+      case "Central" => Central
+      case "AttackingMidfielder" => AttackingMidfielder
+      case "LeftMidfielder" => LeftFullback
+    }
+  }
 
+  override def findAll(): Future[List[Player]] = playerCollection.find().map(documentToPlayer).foldLeft(List.empty[Player])((list, player) => player :: list).head()
 
+  override def findByFirstName(firstName: String): Future[List[Player]] = ???
+
+  override def findByLastName(lastName: String): Future[List[Player]] = ???
+
+  override def findByPosition(position: Position): Future[List[Player]] = ???
 }

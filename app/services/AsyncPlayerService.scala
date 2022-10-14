@@ -1,13 +1,12 @@
 package services
 
-import models.Player
+import models.{Player, Position}
 
 import scala.concurrent.Future
-import scala.reflect.internal.util.Position
 import scala.util.Try
 
 trait AsyncPlayerService {
-  def create(player: Player): Future[Unit]
+  def create(player: Player): Future[Long]
 
   def update(player: Player): Future[Try[Player]]
 
@@ -21,5 +20,4 @@ trait AsyncPlayerService {
 
   def findByPosition(position: Position): Future[List[Player]]
 
-  override def findByPosition(position: Position): Future[List[Player]]
 }

@@ -1,11 +1,10 @@
 package services
 
 import com.fasterxml.jackson.module.scala.deser.overrides.MutableList
-import models.Player
+import models.{Player, Position}
 
 import javax.inject.Inject
 import scala.collection.mutable.ListBuffer
-import scala.reflect.internal.util.Position
 import scala.util.Try
 
 class MemoryPlayerService @Inject()(val players:ListBuffer[Player]) extends PlayerService {

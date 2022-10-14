@@ -1,8 +1,7 @@
 package services
 
-import models.Player
+import models.{Player, Position}
 
-import scala.reflect.internal.util.Position
 import scala.util.Try
 
 trait PlayerService {
