@@ -27,4 +27,5 @@ class MemoryStadiumService @Inject()(stadiums: ListBuffer[Stadium]) extends Stad
   override def findByCountry(country: String): List[Stadium] = stadiums.filter(s => s.country == country).toList
 
   override def findByName(name: String): Option[Stadium] = stadiums.find(s => s.name == name)
+
 }
