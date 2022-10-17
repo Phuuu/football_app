@@ -61,7 +61,7 @@ class PlayerController @Inject()(
         val newId = if (id < 0) id * -1 else id
         val newPlayer = models.Player(
           newId,
-          Team(playerData.team, Stadium(10L, "Stamford Bridge", "B", 1203)),
+          Team(id, playerData.team, Stadium(10L, "Stamford Bridge", "B", 1203)),
           convertPosition(playerData.position),
           playerData.firstName,
           playerData.lastName

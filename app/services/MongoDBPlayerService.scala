@@ -44,7 +44,7 @@ class MongoDBPlayerService extends AsyncPlayerService {
   private def documentToPlayer(x : Document) = {
     Player(
       x.getLong("_id"),
-      Team(x.getString("team"), Stadium(12L, "Chel", "UK", 1000)),
+      documentToATeam(x.get("team").map(d => Document(d.asDocument())).get),
       stringToPosition(x.getString("position")),
       x.getString("firstName"),
       x.getString("lastName"),
@@ -74,4 +74,18 @@ class MongoDBPlayerService extends AsyncPlayerService {
   override def findByLastName(lastName: String): Future[List[Player]] = ???
 
   override def findByPosition(position: Position): Future[List[Player]] = ???
+
+  def documentToATeam(x: Document) = {
+    Team(x.getLong("_id"), x.getString("name"), documentToAStadium(x.get("team").map(d => Document(d.asDocument())).get))
+  }
+
+  def documentToAStadium(x: Document) = {
+    Stadium(
+      x.getLong("_id"),
+      x.getString("name"),
+      x.getString("country"),
+      x.getInteger("capacity")
+    )
+
+  }
 }
