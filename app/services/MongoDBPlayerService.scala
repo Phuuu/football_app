@@ -69,7 +69,7 @@ class MongoDBPlayerService extends AsyncPlayerService {
 
   override def findAll(): Future[List[Player]] = playerCollection.find().map(documentToPlayer).foldLeft(List.empty[Player])((list, player) => player :: list).head()
 
-  override def findByFirstName(firstName: String): Future[List[Player]] = ???// this neeed doing
+  override def findByFirstName(firstName: String): Future[List[Player]] = ??? // this neeed doing one again
 
   override def findByLastName(lastName: String): Future[List[Player]] = ???
 
