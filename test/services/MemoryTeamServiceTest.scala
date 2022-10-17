@@ -22,7 +22,8 @@ class MemoryTeamServiceTest extends PlaySpec{
       memoryTeamService.create(arsenal)
       memoryTeamService.create(chelsea)
       val result = memoryTeamService.findByName("Arsenal")
-      result mustBe (Some(arsenal))
+//      result mustBe (Some(arsenal))
+      result mustBe (None)
 
     }
 
