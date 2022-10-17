@@ -2,12 +2,13 @@ package Services
 
 import models.{Stadium, Team}
 import org.scalatestplus.play.PlaySpec
+import services.MemoryTeamService
 
 import scala.collection.mutable.ListBuffer
 import scala.util.Failure
 
 class MemoryTeamServiceTest extends PlaySpec{
-  "Memory Teamservis" must{
+  "Memory Teamservice" must{
     "return the list I provide it" in {
       val memoryTeamService = new MemoryTeamService(ListBuffer.empty)
       val team = new Team(12L,"Arsenal", new Stadium(3434,"London","UK", 400))

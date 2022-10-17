@@ -3,14 +3,24 @@ package services
 import com.fasterxml.jackson.module.scala.deser.overrides.MutableList
 import models.Team
 
-class MemoryTeamService(teams: MutableList[Team]) extends TeamService {
-  override def create(team: Team): Unit = ???
+import scala.collection.mutable.ListBuffer
+import scala.util.Try
 
-  override def update(team: Team): Unit = ???
+class MemoryTeamService extends TeamService {
 
-  override def findById(id: Long): Unit = ???
+  val whatYouPlease: ListBuffer[Team] = ListBuffer.empty
+  override def create(team: Team): Unit = whatYouPlease += team
 
-  override def findAll(): Unit = ???
+  override def update(team: Team): Try[Team] = {
+    Try(whatYouPlease.find(n => n.id == team.id).head).map(m => {
+      whatYouPlease.filterInPlace(n => n.id != team.id).addOne(team)
+      m
+    })
+  }
 
-  override def findByName(name: String): Unit = ???
+  override def findById(id: Long): Option[Team] = whatYouPlease.find(n => n.id == id)
+
+  override def findAll(): List[Team] = whatYouPlease.toList
+
+  override def findByName(name: String): Option[Team] = whatYouPlease.find(n => n.name == name)
 }
