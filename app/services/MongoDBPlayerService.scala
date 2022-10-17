@@ -29,6 +29,7 @@ class MongoDBPlayerService extends AsyncPlayerService {
       .head()
   }
 
+  // todo
   override def update(player: Player):Future[Try[Player]] = ???
 
   override def findById(id: Long): Future[Option[Player]] = {
