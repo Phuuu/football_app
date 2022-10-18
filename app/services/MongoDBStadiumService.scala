@@ -10,7 +10,7 @@ class MongoDBStadiumService extends AsyncStadiumService {
   val stadiumCollection = myCompanyDatabase.getCollection("stadium")
   override def create(stadium: Stadium): Unit = {
     val newStadium = stadiumDocument(stadium)
-    stadiumCollection.insertOne(newStadium).map(x => x.getInsertedId)
+    stadiumCollection.insertOne(newStadium).map(x => x.getInsertedId.asInt64().longValue()).head()
   }
 
   override def update(id: Long, doc: Document): Future[Stadium] = ???
