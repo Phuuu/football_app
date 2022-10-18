@@ -2,14 +2,14 @@ kind: Service
 apiVersion: v1
 metadata:
   labels:
-    app: mild-temper-microservice-service
+    app: cool-jasmine-microservice-service
     stack: frontend
-  name: mild-temper-microservice-service
+  name: cool-jasmine-microservice-service
   namespace: default
 spec:
   selector:
     source: demo
-    app: mild-temper-microservice
+    app: cool-jasmine-microservice
   ports:
     -   name: web
         protocol: TCP
@@ -23,17 +23,17 @@ metadata:
     stack: frontend
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
-  name: mild-temper-ingress
+  name: cool-jasmine-ingress
   namespace: default
 spec:
   rules:
     -   http:
           paths:
-            -   path: /mild-temper(/|$)(.*)
+            -   path: /cool-jasmine(/|$)(.*)
                 pathType: Prefix
                 backend:
                   service:
-                    name: mild-temper-microservice-service
+                    name: cool-jasmine-microservice-service
                     port:
                       number: 30201
 ---
@@ -41,27 +41,27 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   labels:
-    app: mild-temper-microservice
+    app: cool-jasmine-microservice
     stack: frontend
     source: demo
-  name: mild-temper-microservice
+  name: cool-jasmine-microservice
   namespace: default
 spec:
   replicas: 3
   selector:
     matchLabels:
-      run: mild-temper-microservice
+      run: cool-jasmine-microservice
   template:
     metadata:
       labels:
-        app: mild-temper-microservice
-        run: mild-temper-microservice
+        app: cool-jasmine-microservice
+        run: cool-jasmine-microservice
         source: demo
       namespace: default
     spec:
       containers:
-        -   image: 219099013464.dkr.ecr.us-west-2.amazonaws.com/mild-temper-microservice
-            name: mild-temper-microservice
+        -   image: 219099013464.dkr.ecr.us-west-2.amazonaws.com/cool-jasmine-microservice
+            name: cool-jasmine-microservice
             ports:
               -   name: web
                   containerPort: 9000
@@ -84,4 +84,4 @@ spec:
                       name: mongodb
                       key: mongodb-root-password
               -   name: DATABASE_NAME
-                  value: mild-temper-football-app
+                  value: cool-jasmine-football-app
