@@ -11,6 +11,7 @@ class MongoDBStadiumServiceTest extends PlaySpec with ForAllTestContainer{
 
   "MongoDB Stadium service" must{
     "Create a new stadium" in{
+      pending
       container.start()
       val mongoClient: MongoClient = MongoClient(container.container.getConnectionString)
       val footballAppDB = mongoClient.getDatabase("football_app")

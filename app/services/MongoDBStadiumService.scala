@@ -21,11 +21,19 @@ class MongoDBStadiumService @Inject()(myCompanyDatabase: MongoDatabase) extends 
     stadiumCollection.find(equal("_id",id)).map(a => documentStadium(a))
   }.toSingle().headOption()
 
-  override def findAll(): Future[List[Stadium]] = ???
+  override def findAll(): Future[List[Stadium]] = {
+    stadiumCollection.find().map(x => documentStadium(x)).foldLeft(List.empty[Stadium])((list, stadium) => stadium :: list).head()
+  }
 
-  override def findByCountry(country: String): Future[List[Stadium]] = ???
+  override def findByCountry(country: String): Future[List[Stadium]] = {
+    stadiumCollection.find(equal("country", country))
+      .map(x => documentStadium(x))
+      .foldLeft(List.empty[Stadium])((list, stadium) => stadium :: list).head()
+  }
 
-  override def findByName(name: String): Future[Option[Stadium]] = ???
+  override def findByName(name: String): Future[Option[Stadium]] = {
+    stadiumCollection.find(equal("name", name)).map(a => documentStadium(a))
+  }.toSingle().headOption()
 
   def stadiumDocument(x: Stadium): Document = {
     Document(
