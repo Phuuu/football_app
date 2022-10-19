@@ -22,7 +22,7 @@ metadata:
   labels:
     stack: frontend
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /cool-jasmine/$2
   name: cool-jasmine-ingress
   namespace: default
 spec:
