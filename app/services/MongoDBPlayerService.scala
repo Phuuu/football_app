@@ -30,7 +30,16 @@ class MongoDBPlayerService extends AsyncPlayerService {
   }
 
   // todo
-  override def update(player: Player):Future[Try[Player]] = ???
+  override def update(player: Player):Future[Option[Player]] = {
+    playerCollection.findOneAndUpdate(equal("_id", player.id), Document(
+      "$set" -> Document(
+        "team" -> player.team.name,
+        "position" -> player.position.toString,
+        "firstName" -> player.firstName,
+        "lastName" -> player.lastName
+      )
+    )).map(x => documentToPlayer(x)).toSingle().headOption()
+  }
 
   override def findById(id: Long): Future[Option[Player]] = {
     playerCollection
@@ -65,16 +74,29 @@ class MongoDBPlayerService extends AsyncPlayerService {
       case "Central" => Central
       case "AttackingMidfielder" => AttackingMidfielder
       case "LeftMidfielder" => LeftFullback
+      case _ => Central
     }
   }
 
   override def findAll(): Future[List[Player]] = playerCollection.find().map(documentToPlayer).foldLeft(List.empty[Player])((list, player) => player :: list).head()
 
-  override def findByFirstName(firstName: String): Future[List[Player]] = ??? // this neeed doing one again
+  override def findByFirstName(firstName: String): Future[List[Player]] = {
+    playerCollection.find(equal("firstName", firstName))
+      .map(x => documentToPlayer(x))
+      .foldLeft(List.empty[Player])((list, player) => player :: list).head()
+  }
 
-  override def findByLastName(lastName: String): Future[List[Player]] = ???
+  override def findByLastName(lastName: String): Future[List[Player]] = {
+    playerCollection.find(equal("lastName", lastName))
+      .map(x => documentToPlayer(x))
+      .foldLeft(List.empty[Player])((list, player) => player :: list).head()
+  }
 
-  override def findByPosition(position: Position): Future[List[Player]] = ???
+  override def findByPosition(position: Position): Future[List[Player]] = {
+    playerCollection.find(equal("position", position))
+      .map(x => documentToPlayer(x))
+      .foldLeft(List.empty[Player])((list, player) => player :: list).head()
+  }
 
   def documentToATeam(x: Document) = {
     Team(x.getLong("_id"), x.getString("name"), documentToAStadium(x.get("team").map(d => Document(d.asDocument())).get))
@@ -87,6 +109,6 @@ class MongoDBPlayerService extends AsyncPlayerService {
       x.getString("country"),
       x.getInteger("capacity")
     )
-
   }
+
 }

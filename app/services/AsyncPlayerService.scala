@@ -8,7 +8,7 @@ import scala.util.Try
 trait AsyncPlayerService {
   def create(player: Player): Future[Long]
 
-  def update(player: Player): Future[Try[Player]]
+  def update(player: Player): Future[Option[Player]]
 
   def findById(id: Long): Future[Option[Player]]
 
