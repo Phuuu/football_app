@@ -1,6 +1,7 @@
 package services
 
 import com.dimafeng.testcontainers.{Container, ForAllTestContainer, MongoDBContainer}
+import models.Stadium
 import org.mongodb.scala.{Document, MongoClient}
 import org.scalatestplus.play.PlaySpec
 
@@ -10,13 +11,16 @@ class MongoDBStadiumServiceTest extends PlaySpec with ForAllTestContainer{
 
   "MongoDB Stadium service" must{
     "Create a new stadium" in{
-      pending
+      container.start()
       val mongoClient: MongoClient = MongoClient(container.container.getConnectionString)
       val footballAppDB = mongoClient.getDatabase("football_app")
       val stadiumCollection = footballAppDB.getCollection("stadium")
+      val mongoDBStadiumService = new MongoDBStadiumService(footballAppDB)
 
-      val document = Document("_id" -> 30L, "name" -> "Stus Stadium", "country" -> "United Stuart of Awesomica", "seats" -> 5)
-      stadiumCollection.insertOne(document).subscribe(x => println(x), y => y.printStackTrace(), () => println("Done!"))
+      val testing = mongoDBStadiumService.create(Stadium(30L,"Stus Stadium", "United Stuart of Awesomica",5))
+      mongoDBStadiumService.findById(30L) mustBe(testing)
+
     }
   }
+
 }
