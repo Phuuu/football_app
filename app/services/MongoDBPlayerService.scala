@@ -53,7 +53,9 @@ class MongoDBPlayerService @Inject()(myCompanyDatabase: MongoDatabase) extends A
   private def documentToPlayer(x : Document) = {
     Player(
       x.getLong("_id"),
-      documentToATeam(x.get("team").map(d => Document(d.asDocument())).get),
+      x.get("team").map(l => Team(l.asInt64().longValue(),"Fake Team", Stadium(13L, "All", "France", 12313))).getOrElse(
+        Team(121L, "Fake Names", Stadium(13L, "All", "France", 12313))
+      ),
       stringToPosition(x.getString("position")),
       x.getString("firstName"),
       x.getString("lastName"),
@@ -77,7 +79,9 @@ class MongoDBPlayerService @Inject()(myCompanyDatabase: MongoDatabase) extends A
     }
   }
 
-  override def findAll(): Future[List[Player]] = playerCollection.find().map(documentToPlayer).foldLeft(List.empty[Player])((list, player) => player :: list).head()
+  override def findAll(): Future[List[Player]] = {
+    playerCollection.find().map(documentToPlayer).foldLeft(List.empty[Player])((list, player) => player :: list).head()
+  }
 
   override def findByFirstName(firstName: String): Future[List[Player]] = {
     playerCollection.find(equal("firstName", firstName))
