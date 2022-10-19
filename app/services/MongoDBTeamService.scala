@@ -1,25 +1,20 @@
 package services
 
 import models.{Stadium, Team}
-import org.mongodb.scala.{Document, MongoClient}
+import org.mongodb.scala.{Document, MongoClient, MongoDatabase}
 import org.mongodb.scala.model.Filters.equal
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
-class MongoDBTeamService extends AsyncTeamService {
-  val mongoClient: MongoClient = MongoClient("mongodb://mongo-root:mongo-password@localhost:" + 27017)
-  val myCompanyDatabase = mongoClient.getDatabase("football_app")
+class MongoDBTeamService @Inject()(myCompanyDatabase: MongoDatabase) extends AsyncTeamService {
   val teamCollection = myCompanyDatabase.getCollection("team")
 
   override def create(team: Team): Unit = {
-    val document: Document = Document(
-      "_id" -> team.id,
-      "name" -> team.name,
-      "stadium" -> team.stadium.toString
-    )
+    val newTeam = teamToADocument(team)
 
     teamCollection
-      .insertOne(document)
+      .insertOne(newTeam)
       .map(r => r.getInsertedId.asInt64().longValue())
       .head()
   }
@@ -33,12 +28,17 @@ class MongoDBTeamService extends AsyncTeamService {
     teamCollection.findOneAndUpdate(equal("_id", team.id), namedSomething).map(a => documentToATeam(a)).toSingle().headOption()
   }
 
+  override def findById(id: Long): Future[Option[Team]] = {
+    teamCollection.find(equal("_id", id)).map(a => documentToATeam(a)).toSingle().headOption()
+  }
 
-  override def findById(id: Long): Future[Option[Team]] = ???
+  override def findAll(): Future[List[Team]] = {
+    teamCollection.find().map(x => documentToATeam(x)).foldLeft(List.empty[Team])((list, team) => team :: list).head()
+  }
 
-  override def findAll(): Future[List[Team]] = ???
-
-  override def findByName(name: String): Future[Option[Team]] = ???
+  override def findByName(name: String): Future[Option[Team]] = {
+    teamCollection.find(equal("name", name)).map(a => documentToATeam(a))
+  }.toSingle().headOption()
 
   def documentToATeam(x: Document) = {
     Team(
@@ -57,8 +57,12 @@ class MongoDBTeamService extends AsyncTeamService {
     )
   }
 
-  def teamToADocument(x: Document) = {
-
+  def teamToADocument(x: Team): Document = {
+    Document(
+      "_id" -> x.id,
+      "name" -> x.name,
+      "stadium" -> x.stadium.name,
+    )
   }
 }
 
