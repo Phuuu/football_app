@@ -98,7 +98,8 @@ class MongoDBPlayerService @Inject()(myCompanyDatabase: MongoDatabase) extends A
   }
 
   def documentToATeam(x: Document) = {
-    Team(x.getLong("_id"), x.getString("name"), documentToAStadium(x.get("team").map(d => Document(d.asDocument())).get))
+    Team(x.getLong("_id"), x.getString("name"), x.get("team")
+      .map(v => Stadium(v.asInt64().longValue(), "Fake Name", "Fake Country", -5)))
   }
 
   def documentToAStadium(x: Document) = {
