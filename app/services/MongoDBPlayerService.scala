@@ -4,14 +4,13 @@ import models._
 import org.mongodb.scala._
 import org.mongodb.scala.model.Filters.{empty, equal}
 
+import javax.inject.Inject
 import scala.util.Try
 import scala.concurrent.Future
 
 
 
-class MongoDBPlayerService extends AsyncPlayerService {
-  val mongoClient: MongoClient = MongoClient("mongodb://mongo-root:mongo-password@localhost:" + 27017)
-  val myCompanyDatabase = mongoClient.getDatabase("football_app")
+class MongoDBPlayerService @Inject()(myCompanyDatabase: MongoDatabase) extends AsyncPlayerService {
   val playerCollection = myCompanyDatabase.getCollection("players")
 
   override def create(player: Player): Future[Long] = {
