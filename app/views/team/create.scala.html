@@ -1,0 +1,12 @@
+@(teamForm: Form[TeamData])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+@import views.html.helper.CSRF
+@import helper._
+
+@main("Create Team"){
+@helper.form(action = routes.TeamController.create()) {
+@CSRF.formField
+@helper.inputText(teamForm("name"))
+@helper.inputText(teamForm("stadium"))
+<input type="submit" id="submit" value="Submit" />
+}
+}

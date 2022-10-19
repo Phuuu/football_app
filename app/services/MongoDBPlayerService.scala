@@ -53,7 +53,7 @@ class MongoDBPlayerService @Inject()(myCompanyDatabase: MongoDatabase) extends A
   private def documentToPlayer(x : Document) = {
     Player(
       x.getLong("_id"),
-      x.get("team").map(l => Team(l.asInt64().longValue(),"Fake Team", Stadium(13L, "All", "France", 12313))).getOrElse(
+      x.get("team").map(value => Team(123L, value.asString.toString, Stadium(13L, "All", "France", 12313))).getOrElse(
         Team(121L, "Fake Names", Stadium(13L, "All", "France", 12313))
       ),
       stringToPosition(x.getString("position")),
