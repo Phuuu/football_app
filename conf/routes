@@ -21,7 +21,9 @@ GET     /players                    controllers.PlayerController.list()
 
 GET     /player                     controllers.PlayerController.init()
 
-GET     /player/:id                controllers.PlayerController.show(id:Long)
+GET     /player/:id                 controllers.PlayerController.show(id:Long)
 
 POST    /player                     controllers.PlayerController.create()
+
+GET     /teams                      controllers.TeamController.list()
 

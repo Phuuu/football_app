@@ -23,7 +23,7 @@ class MongoDBTeamService @Inject()(myCompanyDatabase: MongoDatabase) extends Asy
     val namedSomething: Document = Document(
       "_id" -> team.id,
       "name" -> team.name,
-      "stadium" -> team.stadium.id
+      "stadium" -> team.stadiumId.id
     )
     teamCollection.findOneAndUpdate(equal("_id", team.id), namedSomething).map(a => documentToATeam(a)).toSingle().headOption()
   }
@@ -61,7 +61,7 @@ class MongoDBTeamService @Inject()(myCompanyDatabase: MongoDatabase) extends Asy
     Document(
       "_id" -> x.id,
       "name" -> x.name,
-      "stadium" -> x.stadium.name,
+      "stadium" -> x.stadiumId.name,
     )
   }
 }
