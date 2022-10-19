@@ -97,9 +97,10 @@ class MongoDBPlayerService @Inject()(myCompanyDatabase: MongoDatabase) extends A
       .foldLeft(List.empty[Player])((list, player) => player :: list).head()
   }
 
-  def documentToATeam(x: Document) = {
+  def documentToATeam(x: Document): Team = {
     Team(x.getLong("_id"), x.getString("name"), x.get("team")
-      .map(v => Stadium(v.asInt64().longValue(), "Fake Name", "Fake Country", -5)))
+      .map(v => Stadium(v.asInt64().longValue(), "Fake Name", "Fake Country", -5))
+      .getOrElse(Stadium(50L, "Fake Name", "Fake Country", -5)))
   }
 
   def documentToAStadium(x: Document) = {
