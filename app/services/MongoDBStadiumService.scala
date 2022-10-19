@@ -7,8 +7,6 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class MongoDBStadiumService @Inject()(myCompanyDatabase: MongoDatabase) extends AsyncStadiumService {
-//  val mongoClient: MongoClient = MongoClient("mongodb://mongo-root:mongo-password@localhost:" + 27017)
-//  val myCompanyDatabase = mongoClient.getDatabase("football_app")
   val stadiumCollection = myCompanyDatabase.getCollection("stadium")
   override def create(stadium: Stadium): Unit = {
     val newStadium = stadiumDocument(stadium)
