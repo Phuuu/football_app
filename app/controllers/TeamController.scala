@@ -71,44 +71,16 @@ case class TeamData(name: String, stadiumId: Long)
     }
 
     def show(id: Long): Action[AnyContent] = Action.async { implicit request =>
-//      val teamCollection = mongoDatabase
-//        .getCollection("teams")
-//      val aggregated = teamCollection.aggregate(
-//        Seq(
-//          Aggregates
-//            .lookup("stadiums", "stadium", "_id", "stadiumArray")
-//        )
-//      )
-//
-//      val stageOne = aggregated
-//        .map(d => {
-//          val stadiumName = d
-//            .getList("stadiumArray", classOf[util.Map[_, _]])
-//            .asScala.head.get("name")
-//          TeamStadiumView(
-//            d.getLong("_id"),
-//            d.getString("name"),
-//            stadiumName.asInstanceOf[String],
-//            d.getLong("stadium")
-//          )
-//        })
-//      stageOne.subscribe(t => println(t), t => t.printStackTrace(), () => println("done"))
-//      val eventualMaybeView = stageOne.toSingle().headOption()
-//      eventualMaybeView
-//        .map {
-//                case Some(teamView) => Ok(views.html.team.show(teamView))
-//                case None => NotFound("Team not found")
-//              }
-
-      def stageOne(x: Team): TeamStadiumView = {
-        val stadiumName = stadiumService.findById(x.stadiumId)
-        val st2 = stadiumName.map {
-          case Some(stadiumThing) => stageTwo(stadiumThing)
-          case None => "Unknown"
+      def stageOne(t: Team): TeamStadiumView = {
+        val stadiumIn = stadiumService.findById(t.stadiumId)
+        val stadiumName = stadiumIn.map {
+          case Some(stadium) => stageTwo(stadium)
+          case None => "Not Found"
         }.toString
-        TeamStadiumView(x.id, x.name, st2, x.stadiumId)
+        TeamStadiumView(t.id, t.name, stadiumName, t.stadiumId)
       }
-      def stageTwo(st: Stadium): String = st.name
+
+      def stageTwo(stadium: Stadium): String = stadium.name
 
       val eventualMaybeView = teamService.findById(id)
       eventualMaybeView.map {
