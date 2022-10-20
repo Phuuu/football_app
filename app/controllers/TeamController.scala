@@ -94,7 +94,7 @@ case class TeamData(name: String, stadiumId: Long)
       val eventualMaybeView = stageOne.toSingle().headOption()
       eventualMaybeView
         .map {
-                case Some(teamView) => Ok(views.html.team.show(teamView))
+                case Some(teams) => Ok(views.html.team.show(teams))
                 case None => NotFound("Team not found")
               }
     }
