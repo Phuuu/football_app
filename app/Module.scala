@@ -2,7 +2,7 @@ import com.google.inject._
 import models.Stadium
 import org.mongodb.scala.{MongoClient, MongoDatabase}
 import play.api.Configuration
-import services.{AsyncPlayerService, AsyncStadiumService, MemoryStadiumService, MongoDBPlayerService, MongoDBStadiumService, StadiumService}
+import services.{AsyncPlayerService, AsyncStadiumService, AsyncTeamService, MemoryStadiumService, MongoDBPlayerService, MongoDBStadiumService, MongoDBTeamService, StadiumService}
 
 import scala.collection.mutable.ListBuffer
 
@@ -29,6 +29,9 @@ class Module extends AbstractModule {
 //    bind(classOf[TeamService]).to(classOf[MemoryTeamService])
     bind(classOf[AsyncPlayerService]).to(classOf[MongoDBPlayerService])
     bind(classOf[AsyncStadiumService]).to(classOf[MongoDBStadiumService])
+    bind(classOf[AsyncTeamService]).to(classOf[MongoDBTeamService])
+
+
   }
 
 

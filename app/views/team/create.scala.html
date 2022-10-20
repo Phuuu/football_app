@@ -1,4 +1,4 @@
-@(teamForm: Form[TeamData])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+@(teamForm: Form[TeamData], listOfStadiums: List[Stadium] )(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 @import views.html.helper.CSRF
 @import helper._
 
@@ -6,7 +6,12 @@
 @helper.form(action = routes.TeamController.create()) {
 @CSRF.formField
 @helper.inputText(teamForm("name"))
-@helper.inputText(teamForm("stadium"))
+@helper.select(
+field = teamForm("stadium"),
+options = listOfStadiums.map(stadium => stadium.id.toString -> stadium.name)
+)
 <input type="submit" id="submit" value="Submit" />
 }
 }
+
+

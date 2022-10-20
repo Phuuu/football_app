@@ -31,3 +31,5 @@ GET     /team/:id                   controllers.TeamController.show(id:Long)
 
 POST    /team                       controllers.TeamController.create()
 
+GET     /team                     controllers.TeamController.init()
+

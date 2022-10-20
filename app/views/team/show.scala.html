@@ -1,11 +1,11 @@
 @import org.mongodb.scala.Document
 @(team:Team, teamInfo:Document)
 
+@main("teamView") {
+    <div class="container">
+        <h6>Team @teamInfo("name").asString.getValue</h6>
 
-<h1>Welcome to the @team.name page!</h1>
+    </div>
 
-<ul>
-    @for(team <- teams) {
-    <li>@team.name</li>
-    }
-</ul>
+}
+
