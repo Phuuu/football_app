@@ -53,8 +53,8 @@ class MongoDBPlayerService @Inject()(myCompanyDatabase: MongoDatabase) extends A
   private def documentToPlayer(x : Document) = {
     Player(
       x.getLong("_id"),
-      x.get("team").map(value => Team(123L, value.asString.toString, Stadium(13L, "All", "France", 12313))).getOrElse(
-        Team(121L, "Fake Names", Stadium(13L, "All", "France", 12313))
+      x.get("team").map(value => Team(123L, value.asString.toString, 13L)).getOrElse(
+        Team(121L, "Fake Names", 14L)
       ),
       stringToPosition(x.getString("position")),
       x.getString("firstName"),
@@ -102,9 +102,12 @@ class MongoDBPlayerService @Inject()(myCompanyDatabase: MongoDatabase) extends A
   }
 
   def documentToATeam(x: Document): Team = {
-    Team(x.getLong("_id"), x.getString("name"), x.get("team")
-      .map(v => Stadium(v.asInt64().longValue(), "Fake Name", "Fake Country", -5))
-      .getOrElse(Stadium(50L, "Fake Name", "Fake Country", -5)))
+    Team(x.getLong("_id"), x.getString("name"), x.getLong(
+      "stadium"
+    ))
+//    Team(x.getLong("_id"), x.getString("name"), x.get("team")
+//      .map(v => Stadium(v.asInt64().longValue(), "Fake Name", "Fake Country", -5))
+//      .getOrElse(10L))
   }
 
   def documentToAStadium(x: Document) = {

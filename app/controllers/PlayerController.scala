@@ -16,7 +16,6 @@ class PlayerController @Inject()(
   val controllerComponents: ControllerComponents,
   val playerService: AsyncPlayerService
   ) extends BaseController with play.api.i18n.I18nSupport {
-
   def list() = Action.async { implicit request =>
     val result = playerService.findAll()
     result.map(r => Ok(views.html.player.players(r)))
@@ -61,7 +60,7 @@ class PlayerController @Inject()(
         val newId = if (id < 0) id * -1 else id
         val newPlayer = models.Player(
           newId,
-          Team(id, playerData.team, Stadium(10L, "Stamford Bridge", "B", 1203)),
+          Team(id, playerData.team, 10L),
           convertPosition(playerData.position),
           playerData.firstName,
           playerData.lastName

@@ -44,7 +44,7 @@ case class TeamData(name: String, stadiumId: Long)
           println("Nay!" + formWithErrors)
           stadiumService
             .findAll()
-            .map(xs => BadRequest(views.html.team.create(formWithErrors, xs)))
+            .map(xs => BadRequest(views.html.team.create(formWithErrors)))
         },
         teamData => {
           val maybeStadium = stadiumService.findById(teamData.stadiumId)
@@ -67,7 +67,7 @@ case class TeamData(name: String, stadiumId: Long)
       )
     }
 
-    def show(id: Long) = Action.async { implicit request =>
+    def show(id: Long): Action[AnyContent] = Action.async { implicit request =>
       mongoDatabase
         .getCollection("teams")
         .aggregate(
@@ -83,7 +83,7 @@ case class TeamData(name: String, stadiumId: Long)
             teamService
               .findById(id)
               .map {
-                case Some(team) => Ok(views.html.team.show(team.id, teamInfo))
+                case Some(team) => Ok(views.html.team.show(team, teamInfo))
                 case None => NotFound("Team not found")
               }
           case None => Future(NotFound("Team not found"))

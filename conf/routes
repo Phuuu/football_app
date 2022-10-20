@@ -27,3 +27,7 @@ POST    /player                     controllers.PlayerController.create()
 
 GET     /teams                      controllers.TeamController.list()
 
+GET     /team/:id                   controllers.TeamController.show(id:Long)
+
+POST    /team                       controllers.TeamController.create()
+

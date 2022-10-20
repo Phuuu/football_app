@@ -1,0 +1,11 @@
+@import org.mongodb.scala.Document
+@(team:Team, teamInfo:Document)
+
+
+<h1>Welcome to the @team.name page!</h1>
+
+<ul>
+    @for(team <- teams) {
+    <li>@team.name</li>
+    }
+</ul>
