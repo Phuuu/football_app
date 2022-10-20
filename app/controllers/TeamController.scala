@@ -102,18 +102,13 @@ case class TeamData(name: String, stadiumId: Long)
 
       def stageOne(x: Team): TeamStadiumView = {
         val stadiumName = stadiumService.findById(x.stadiumId)
-        def stageTwo(y: Future[Option[Stadium]]): String = {
-          y.toString
-        }
-        val realStadiumName = stageTwo(stadiumName)
-
-        TeamStadiumView(
-          x.id,
-          x.name,
-          realStadiumName,
-          x.stadiumId
-        )
+        val st2 = stadiumName.map {
+          case Some(stadiumThing) => stageTwo(stadiumThing)
+          case None => "Unknown"
+        }.toString
+        TeamStadiumView(x.id, x.name, st2, x.stadiumId)
       }
+      def stageTwo(st: Stadium): String = st.name
 
       val eventualMaybeView = teamService.findById(id)
       eventualMaybeView.map {
