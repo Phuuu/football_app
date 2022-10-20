@@ -1,15 +1,16 @@
 package controllers
 
 import org.mongodb.scala.MongoDatabase
-import org.mongodb.scala.model.Aggregates._
+import org.mongodb.scala.model.Aggregates
 import play.api.data.Form
 import play.api.data.Forms.{longNumber, mapping, text}
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
-import services.{AsyncStadiumService, AsyncTeamService}
+import services.{AsyncStadiumService, AsyncTeamService, TeamStadiumView}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import java.util
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.jdk.CollectionConverters._
 import scala.util.hashing.MurmurHash3
 
 case class TeamData(name: String, stadiumId: Long)
@@ -25,8 +26,8 @@ case class TeamData(name: String, stadiumId: Long)
       result.map(ls => Ok(views.html.team.teams(ls)))
     }
 
-    def init(): Action[AnyContent] = Action { implicit request =>
-      Ok(views.html.team.create(teamForm))
+    def init(): Action[AnyContent] = Action.async { implicit request =>
+      stadiumService.findAll().map(x => Ok(views.html.team.create(teamForm, x)))
     }
 
     val teamForm = Form(mapping(
@@ -44,7 +45,7 @@ case class TeamData(name: String, stadiumId: Long)
           println("Nay!" + formWithErrors)
           stadiumService
             .findAll()
-            .map(xs => BadRequest(views.html.team.create(formWithErrors)))
+            .map(xs => BadRequest(views.html.team.create(formWithErrors, xs)))
         },
         teamData => {
           val maybeStadium = stadiumService.findById(teamData.stadiumId)
@@ -68,26 +69,33 @@ case class TeamData(name: String, stadiumId: Long)
     }
 
     def show(id: Long): Action[AnyContent] = Action.async { implicit request =>
-      mongoDatabase
+      val teamCollection = mongoDatabase
         .getCollection("teams")
-        .aggregate(
-          List(
-            lookup("stadiums", "stadium", "_id", "stadiumDetails"),
-            out("temp")
-          )
+      val aggregated = teamCollection.aggregate(
+        Seq(
+          Aggregates
+            .lookup("stadiums", "stadium", "_id", "stadiumArray")
         )
-        .toSingle()
-        .headOption()
-        .flatMap {
-          case Some(teamInfo) =>
-            teamService
-              .findById(id)
-              .map {
-                case Some(team) => Ok(views.html.team.show(team, teamInfo))
+      )
+
+      val stageOne = aggregated
+        .map(d => {
+          val stadiumName = d
+            .getList("stadiumArray", classOf[util.Map[_, _]])
+            .asScala.head.get("name")
+          TeamStadiumView(
+            d.getLong("_id"),
+            d.getString("name"),
+            stadiumName.asInstanceOf[String],
+            d.getLong("stadium")
+          )
+        })
+      stageOne.subscribe(t => println(t), t => t.printStackTrace(), () => println("done"))
+      val eventualMaybeView = stageOne.toSingle().headOption()
+      eventualMaybeView
+        .map {
+                case Some(teamView) => Ok(views.html.team.show(teamView))
                 case None => NotFound("Team not found")
               }
-          case None => Future(NotFound("Team not found"))
-        }
-
     }
   }

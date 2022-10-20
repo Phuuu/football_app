@@ -7,7 +7,7 @@
 @CSRF.formField
 @helper.inputText(teamForm("name"))
 @helper.select(
-field = teamForm("stadium"),
+field = teamForm("stadiumId"),
 options = listOfStadiums.map(stadium => stadium.id.toString -> stadium.name)
 )
 <input type="submit" id="submit" value="Submit" />

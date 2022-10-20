@@ -1,11 +1,11 @@
 @import org.mongodb.scala.Document
-@(team:Team, teamInfo:Document)
+@import services.TeamStadiumView
+@(team:TeamStadiumView)
 
 @main("teamView") {
     <div class="container">
-        <h6>Team @teamInfo("name").asString.getValue</h6>
-
+        <h6>Team @team.teamName</h6>
+        <h6>Team <a href="@routes.StadiumController.show(team.stadiumId)"> @team.stadiumName</a></h6>
     </div>
-
 }
 
