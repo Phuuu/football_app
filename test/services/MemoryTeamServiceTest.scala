@@ -11,14 +11,14 @@ class MemoryTeamServiceTest extends PlaySpec{
   "Memory TeamService" must{
     "return the list I provide it" in {
       val memoryTeamService = new MemoryTeamService()
-      val team = new Team(12L,"Arsenal", new Stadium(3434,"London","UK", 400))
+      val team = new Team(12L,"Arsenal", 335L)
       memoryTeamService.create(team)
       memoryTeamService.findAll().size mustBe(1)
     }
     "find a team by Id" in{
       val memoryTeamService = new MemoryTeamService()
-      val arsenal = Team(12L, "Arsenal", Stadium(3434,"London","UK", 400))
-      val chelsea = Team(10L, "Chelsea", Stadium(3535,"London","UK", 450))
+      val arsenal = Team(12L, "Arsenal", 334L)
+      val chelsea = Team(10L, "Chelsea", 335L)
       memoryTeamService.create(arsenal)
       memoryTeamService.create(chelsea)
       val result = memoryTeamService.findByName("Arsenal")
