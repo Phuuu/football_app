@@ -4,8 +4,8 @@
 
 @main("teamView") {
     <div class="container">
-        <h6>Team @team.teamName</h6>
-        <h6>Team <a href="@routes.StadiumController.show(team.stadiumId)"> @team.stadiumName</a></h6>
+        <h6>Team name is: @team.teamName</h6>
+        <h6>Stadium is: <a href="@routes.StadiumController.show(team.stadiumId)"> @team.stadiumName</a></h6>
     </div>
 }
 

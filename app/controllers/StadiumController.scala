@@ -2,7 +2,8 @@ package controllers
 
 import models.Stadium
 import services.{AsyncStadiumService, StadiumService}
-
+import org.mongodb.scala.MongoDatabase
+import org.mongodb.scala.model.{Aggregates, Filters}
 import javax.inject._
 import play.api._
 import play.api.data.Form
@@ -16,7 +17,8 @@ case class StadiumData(name: String, city: String, country: String, seats: Int)
 
 class StadiumController @Inject()(
     val controllerComponents: ControllerComponents,
-    val stadiumService: AsyncStadiumService
+    val stadiumService: AsyncStadiumService,
+    mongoDatabase: MongoDatabase
   ) extends BaseController with play.api.i18n.I18nSupport {
   def list() = Action.async { implicit request =>
     val result = stadiumService.findAll()
@@ -59,9 +61,15 @@ class StadiumController @Inject()(
     )
   }
 
-  def show(id: Long) = Action { implicit request =>
-    Ok("This is placeholder for this stadium")
-  }
+  def show(id: Long) = Action.async { implicit request =>
+    val eventualMaybeView = stadiumService.findById(id)
+      eventualMaybeView.map {
+        case Some(stadiumView) => Ok(views.html.stadium.show(stadiumView))
+        case None => NotFound("Stadium not found, nope!")
+      }
+    }
+
+
 
 
 }
