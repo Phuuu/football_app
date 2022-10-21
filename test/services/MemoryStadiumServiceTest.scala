@@ -19,8 +19,8 @@ class MemoryStadiumServiceTest extends PlaySpec{
 
     "Some todo" in{
       val memoryTeamService = new MemoryTeamService()
-      val arsenal = Team(12L, "Arsenal", Stadium(3434,"London","UK", 400))
-      val chelsea = Team(10L, "Chelsea", Stadium(3535,"London","UK", 450))
+      val arsenal = Team(12L, "Arsenal", 334L)
+      val chelsea = Team(10L, "Chelsea", 345L)
       memoryTeamService.create(arsenal)
       memoryTeamService.create(chelsea)
       val result = memoryTeamService.findByName("Arsenal")
