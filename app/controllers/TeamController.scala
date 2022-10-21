@@ -1,7 +1,7 @@
 package controllers
 
 import org.mongodb.scala.MongoDatabase
-import org.mongodb.scala.model.Aggregates
+import org.mongodb.scala.model.{Aggregates, Filters}
 import play.api.data.Form
 import play.api.data.Forms.{longNumber, mapping, text}
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
@@ -70,11 +70,12 @@ case class TeamData(name: String, stadiumId: Long)
 
     def show(id: Long): Action[AnyContent] = Action.async { implicit request =>
       val teamCollection = mongoDatabase
-        .getCollection("teams")
+        .getCollection("team")
       val aggregated = teamCollection.aggregate(
         Seq(
+          Aggregates.`match`(Filters.equal("_id", id)),
           Aggregates
-            .lookup("stadiums", "stadium", "_id", "stadiumArray")
+            .lookup("stadium", "stadium", "_id", "stadiumArray")
         )
       )
 
